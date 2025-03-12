@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SMSNotificationConsolePOC": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
