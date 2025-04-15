@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhatsAppNotificationConsole
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMSNotificationConsolePOC", "SMSNotificationConsolePOC\SMSNotificationConsolePOC.csproj", "{D5398D8E-0802-45BA-AEF8-4C53F606B8A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationApi", "AuthenticationApi\AuthenticationApi.csproj", "{A4B23D64-B585-419E-BAF6-783797DD61F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{D5398D8E-0802-45BA-AEF8-4C53F606B8A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5398D8E-0802-45BA-AEF8-4C53F606B8A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5398D8E-0802-45BA-AEF8-4C53F606B8A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4B23D64-B585-419E-BAF6-783797DD61F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4B23D64-B585-419E-BAF6-783797DD61F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4B23D64-B585-419E-BAF6-783797DD61F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4B23D64-B585-419E-BAF6-783797DD61F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
