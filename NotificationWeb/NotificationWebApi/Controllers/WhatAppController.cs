@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NotificationWebApi.Business.WhatApps;
-using NotificationWebApi.Request;
+using NotificationWebApi.Requests;
 
 namespace NotificationWebApi.Controllers;
 
@@ -11,10 +12,12 @@ namespace NotificationWebApi.Controllers;
 public class WhatAppController : ControllerBase
 {
     private readonly IWhatAppNotification _whatAppNotification;
+    private readonly IValidator<SendMessageRequest> _validator;
 
-    public WhatAppController(IWhatAppNotification whatAppNotification)
+    public WhatAppController(IWhatAppNotification whatAppNotification, IValidator<SendMessageRequest> validator)
     {
         _whatAppNotification = whatAppNotification ?? throw new ArgumentNullException(nameof(whatAppNotification));
+        _validator = validator ?? throw new ArgumentNullException(nameof(validator));
     }
 
     /// <summary>
@@ -26,8 +29,8 @@ public class WhatAppController : ControllerBase
     [ProducesResponseType(200, Type = typeof(bool))]
     public async Task<IActionResult> Send([FromBody] SendMessageRequest request)
     {
-        await _whatAppNotification.SendWhatApp(string.Empty, string.Empty);
-            
+        var response = await _whatAppNotification.SendWhatApp(string.Empty, string.Empty);
+
         return Ok(true);
     }
 }

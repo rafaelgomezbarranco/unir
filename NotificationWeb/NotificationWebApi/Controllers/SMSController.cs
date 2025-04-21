@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NotificationWebApi.Business.SMSs;
-using NotificationWebApi.Request;
+using NotificationWebApi.Requests;
 
 namespace NotificationWebApi.Controllers;
 
@@ -11,10 +12,12 @@ namespace NotificationWebApi.Controllers;
 public class SMSController : ControllerBase
 {
     private readonly ISMSNotification _smsNotification;
+    private readonly IValidator<SendMessageRequest> _validator;
 
-    public SMSController(ISMSNotification smsNotification)
+    public SMSController(ISMSNotification smsNotification, IValidator<SendMessageRequest> validator)
     {
         _smsNotification = smsNotification ?? throw new ArgumentNullException(nameof(smsNotification));
+        _validator = validator ?? throw new ArgumentNullException(nameof(validator));
     }
 
     /// <summary>
@@ -26,8 +29,8 @@ public class SMSController : ControllerBase
     [ProducesResponseType(200, Type = typeof(bool))]
     public async Task<IActionResult> Send([FromBody] SendMessageRequest request)
     {
-        await _smsNotification.SendSMS(string.Empty, string.Empty);
-            
+        var response = await _smsNotification.SendSMS(string.Empty, string.Empty);
+
         return Ok(true);
     }
 }
