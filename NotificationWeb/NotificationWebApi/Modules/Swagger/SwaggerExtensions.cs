@@ -2,7 +2,7 @@
 
 namespace NotificationWebApi.Modules.Swagger;
 
-public static class SwaggerExtensions
+public static class ServicesExtensions
 {
     public static IServiceCollection AddSwaggerGenWithDocumentationAndSecurity(this IServiceCollection services)
     {

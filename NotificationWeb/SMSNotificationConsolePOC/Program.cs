@@ -6,7 +6,6 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-        // Este código recupera la cadena de conexión de una variable de entorno.
         const string connectionString = "<<connection-string>> ";  // Your connection string
         var smsClient = new SmsClient(connectionString);
 

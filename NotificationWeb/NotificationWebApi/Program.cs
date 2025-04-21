@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using NotificationWebApi.Modules.Services;
 using NotificationWebApi.Modules.Swagger;
 
 namespace NotificationWebApi;
@@ -18,6 +19,8 @@ public static class Program
         builder.Services.AddEndpointsApiExplorer();
 
         builder.Services.AddSwaggerGenWithDocumentationAndSecurity();
+
+        builder.Services.AddServices();
 
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -42,6 +45,7 @@ public static class Program
         builder.Services.AddAuthorization();
 
         var app = builder.Build();
+
 
         app.UseSwagger();
         app.UseSwaggerUI();
