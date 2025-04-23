@@ -1,8 +1,10 @@
-using System.Text;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using NotificationWebApi.Modules.Services;
 using NotificationWebApi.Modules.Swagger;
+using NotificationWebApi.Requests.Validations;
+using System.Text;
 
 namespace NotificationWebApi;
 
@@ -14,6 +16,7 @@ public static class Program
 
         // Add services to the container.
         builder.Services.AddControllers();
+        builder.Services.AddValidatorsFromAssemblyContaining<SendMessageRequestValidator>();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
