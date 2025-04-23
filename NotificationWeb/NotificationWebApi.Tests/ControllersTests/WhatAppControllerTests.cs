@@ -1,6 +1,8 @@
-﻿using FluentValidation.Results;
+﻿using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NotificationWebApi.Business;
 using NotificationWebApi.Business.WhatApps;
 using NotificationWebApi.Controllers;
 using NotificationWebApi.Requests;
@@ -11,16 +13,28 @@ namespace NotificationWebApi.Tests.ControllersTests;
 
 public class WhatAppControllerTests
 {
-
-    [Fact]
-    public void GivenNullIWhatAppNotification_WhenConstructingController_ThenThrowsArgumentNullException()
+    [Theory]
+    [InlineData("whatAppNotification")]
+    [InlineData("validator")]
+    [InlineData("appointmentMessageService")]
+    public void GivenNullDependencies_WhenConstructingController_ThenThrowsArgumentNullException(string nullParam)
     {
-        // Act & Assert
+        // Arrange
+        var whatAppNotification = nullParam == "whatAppNotification" ? null : new Mock<IWhatAppNotification>().Object;
+        var validator = nullParam == "validator" ? null : new SendMessageRequestValidator();
+        var appointmentMessageService = nullParam == "appointmentMessageService" ? null : new AppointmentMessageService();
+
+        // Act
         var exception = Assert.Throws<ArgumentNullException>(() =>
-            new WhatAppController(null!, new SendMessageRequestValidator())
+            new WhatAppController(
+                (IWhatAppNotification?)whatAppNotification!,
+                (IValidator<SendMessageRequest>?)validator!,
+                (IAppointmentMessageService?)appointmentMessageService!
+            )
         );
 
-        Assert.Equal("whatAppNotification", exception.ParamName);
+        // Assert
+        Assert.Equal(nullParam, exception.ParamName);
     }
 
     [Fact]
@@ -29,11 +43,12 @@ public class WhatAppControllerTests
         // Arrange
         var mockWhatAppNotification = new Mock<IWhatAppNotification>();
         var validator = new SendMessageRequestValidator();
+        var mockMessageService = new Mock<IAppointmentMessageService>();
         mockWhatAppNotification
             .Setup(x => x.SendWhatApp(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(true);
 
-        var sut = new WhatAppController(mockWhatAppNotification.Object, validator);
+        var sut = new WhatAppController(mockWhatAppNotification.Object, validator, mockMessageService.Object);
 
         var request = new SendMessageRequest()
         {
@@ -60,11 +75,12 @@ public class WhatAppControllerTests
         // Arrange
         var mockWhatAppNotification = new Mock<IWhatAppNotification>();
         var validator = new SendMessageRequestValidator();
+        var mockMessageService = new Mock<IAppointmentMessageService>();
         mockWhatAppNotification
             .Setup(x => x.SendWhatApp(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(false);
 
-        var sut = new WhatAppController(mockWhatAppNotification.Object, validator);
+        var sut = new WhatAppController(mockWhatAppNotification.Object, validator, mockMessageService.Object);
 
         var request = new SendMessageRequest()
         {
@@ -93,8 +109,9 @@ public class WhatAppControllerTests
         // Arrange
         var mockWhatAppNotification = new Mock<IWhatAppNotification>();
         var validator = new SendMessageRequestValidator();
+        var mockMessageService = new Mock<IAppointmentMessageService>();
 
-        var sut = new WhatAppController(mockWhatAppNotification.Object, validator);
+        var sut = new WhatAppController(mockWhatAppNotification.Object, validator, mockMessageService.Object);
 
         var request = new SendMessageRequest()
         {
@@ -124,8 +141,9 @@ public class WhatAppControllerTests
         // Arrange
         var mockWhatAppNotification = new Mock<IWhatAppNotification>();
         var validator = new SendMessageRequestValidator();
+        var mockMessageService = new Mock<IAppointmentMessageService>();
 
-        var sut = new WhatAppController(mockWhatAppNotification.Object, validator);
+        var sut = new WhatAppController(mockWhatAppNotification.Object, validator, mockMessageService.Object);
 
         var request = new SendMessageRequest()
         {
@@ -155,8 +173,9 @@ public class WhatAppControllerTests
         // Arrange
         var mockWhatAppNotification = new Mock<IWhatAppNotification>();
         var validator = new SendMessageRequestValidator();
+        var mockMessageService = new Mock<IAppointmentMessageService>();
 
-        var sut = new WhatAppController(mockWhatAppNotification.Object, validator);
+        var sut = new WhatAppController(mockWhatAppNotification.Object, validator, mockMessageService.Object);
 
         var request = new SendMessageRequest()
         {
@@ -186,8 +205,9 @@ public class WhatAppControllerTests
         // Arrange
         var mockWhatAppNotification = new Mock<IWhatAppNotification>();
         var validator = new SendMessageRequestValidator();
+        var mockMessageService = new Mock<IAppointmentMessageService>();
 
-        var sut = new WhatAppController(mockWhatAppNotification.Object, validator);
+        var sut = new WhatAppController(mockWhatAppNotification.Object, validator, mockMessageService.Object);
 
         var request = new SendMessageRequest()
         {
@@ -214,11 +234,12 @@ public class WhatAppControllerTests
         // Arrange
         var mockWhatAppNotification = new Mock<IWhatAppNotification>();
         var validator = new SendMessageRequestValidator();
+        var mockMessageService = new Mock<IAppointmentMessageService>();
         mockWhatAppNotification
             .Setup(x => x.SendWhatApp(It.IsAny<string>(), It.IsAny<string>()))
             .ThrowsAsync(new Exception("Simulated failure"));
 
-        var sut = new WhatAppController(mockWhatAppNotification.Object, validator);
+        var sut = new WhatAppController(mockWhatAppNotification.Object, validator, mockMessageService.Object);
 
         var request = new SendMessageRequest()
         {

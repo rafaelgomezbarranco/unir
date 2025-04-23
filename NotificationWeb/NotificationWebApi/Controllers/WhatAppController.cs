@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NotificationWebApi.Business;
 using NotificationWebApi.Business.WhatApps;
 using NotificationWebApi.Requests;
 using NotificationWebApi.Responses;
@@ -14,11 +15,16 @@ public class WhatAppController : ControllerBase
 {
     private readonly IWhatAppNotification _whatAppNotification;
     private readonly IValidator<SendMessageRequest> _validator;
+    private readonly IAppointmentMessageService _appointmentMessageService;
 
-    public WhatAppController(IWhatAppNotification whatAppNotification, IValidator<SendMessageRequest> validator)
+    public WhatAppController(
+        IWhatAppNotification whatAppNotification,
+        IValidator<SendMessageRequest> validator,
+        IAppointmentMessageService appointmentMessageService)
     {
         _whatAppNotification = whatAppNotification ?? throw new ArgumentNullException(nameof(whatAppNotification));
         _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+        _appointmentMessageService = appointmentMessageService ?? throw new ArgumentNullException(nameof(appointmentMessageService));
     }
 
     /// <summary>
@@ -42,7 +48,12 @@ public class WhatAppController : ControllerBase
 
         try
         {
-            var response = await _whatAppNotification.SendWhatApp(string.Empty, string.Empty);
+            var message = _appointmentMessageService.GenerateMessage(
+                request.PatientName,
+                request.LanguageCode,
+                request.DateTime);
+
+            var response = await _whatAppNotification.SendWhatApp(request.PhoneNumber, message);
 
             var sendMessageResponse = new SendMessageResponse { IsMessageSent = response };
 

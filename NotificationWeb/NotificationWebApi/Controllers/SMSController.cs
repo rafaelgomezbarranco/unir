@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NotificationWebApi.Business;
 using NotificationWebApi.Business.SMSs;
 using NotificationWebApi.Requests;
 using NotificationWebApi.Responses;
@@ -14,11 +15,16 @@ public class SMSController : ControllerBase
 {
     private readonly ISMSNotification _smsNotification;
     private readonly IValidator<SendMessageRequest> _validator;
+    private readonly IAppointmentMessageService _appointmentMessageService;
 
-    public SMSController(ISMSNotification smsNotification, IValidator<SendMessageRequest> validator)
+    public SMSController(
+        ISMSNotification smsNotification,
+        IValidator<SendMessageRequest> validator,
+        IAppointmentMessageService appointmentMessageService)
     {
         _smsNotification = smsNotification ?? throw new ArgumentNullException(nameof(smsNotification));
         _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+        _appointmentMessageService = appointmentMessageService ?? throw new ArgumentNullException(nameof(appointmentMessageService));
     }
 
     /// <summary>
@@ -42,7 +48,12 @@ public class SMSController : ControllerBase
 
         try
         {
-            var response = await _smsNotification.SendSMS(string.Empty, string.Empty);
+            var message = _appointmentMessageService.GenerateMessage(
+                request.PatientName,
+                request.LanguageCode,
+                request.DateTime);
+
+            var response = await _smsNotification.SendSMS(request.PhoneNumber, message);
 
             var sendMessageResponse = new SendMessageResponse { IsMessageSent = response };
 

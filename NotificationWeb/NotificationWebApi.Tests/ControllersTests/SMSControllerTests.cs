@@ -1,6 +1,8 @@
-﻿using FluentValidation.Results;
+﻿using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NotificationWebApi.Business;
 using NotificationWebApi.Business.SMSs;
 using NotificationWebApi.Controllers;
 using NotificationWebApi.Requests;
@@ -11,16 +13,28 @@ namespace NotificationWebApi.Tests.ControllersTests;
 
 public class SMSControllerTests
 {
-
-    [Fact]
-    public void GivenNullISMSNotification_WhenConstructingController_ThenThrowsArgumentNullException()
+    [Theory]
+    [InlineData("smsNotification")]
+    [InlineData("validator")]
+    [InlineData("appointmentMessageService")]
+    public void GivenNullDependencies_WhenConstructingController_ThenThrowsArgumentNullException(string nullParam)
     {
-        // Act & Assert
+        // Arrange
+        var smsNotification = nullParam == "smsNotification" ? null : new Mock<ISMSNotification>().Object;
+        var validator = nullParam == "validator" ? null : new SendMessageRequestValidator();
+        var appointmentMessageService = nullParam == "appointmentMessageService" ? null : new AppointmentMessageService();
+
+        // Act
         var exception = Assert.Throws<ArgumentNullException>(() =>
-            new SMSController(null!, new SendMessageRequestValidator())
+            new SMSController(
+                (ISMSNotification?)smsNotification!,
+                (IValidator<SendMessageRequest>?)validator!,
+                (IAppointmentMessageService?)appointmentMessageService!
+            )
         );
 
-        Assert.Equal("smsNotification", exception.ParamName);
+        // Assert
+        Assert.Equal(nullParam, exception.ParamName);
     }
 
     [Fact]
@@ -29,12 +43,13 @@ public class SMSControllerTests
         // Arrange
         var mockSmsNotification = new Mock<ISMSNotification>();
         var validator = new SendMessageRequestValidator();
+        var mockMessageService = new Mock<IAppointmentMessageService>();
 
         mockSmsNotification
             .Setup(x => x.SendSMS(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(true);
 
-        var sut = new SMSController(mockSmsNotification.Object, validator);
+        var sut = new SMSController(mockSmsNotification.Object, validator, mockMessageService.Object);
 
         var request = new SendMessageRequest()
         {
@@ -61,11 +76,12 @@ public class SMSControllerTests
         // Arrange
         var mockSmsNotification = new Mock<ISMSNotification>();
         var validator = new SendMessageRequestValidator();
+        var mockMessageService = new Mock<IAppointmentMessageService>();
         mockSmsNotification
             .Setup(x => x.SendSMS(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(false);
 
-        var sut = new SMSController(mockSmsNotification.Object, validator);
+        var sut = new SMSController(mockSmsNotification.Object, validator, mockMessageService.Object);
 
         var request = new SendMessageRequest()
         {
@@ -94,8 +110,9 @@ public class SMSControllerTests
         // Arrange
         var mockSmsNotification = new Mock<ISMSNotification>();
         var validator = new SendMessageRequestValidator();
+        var mockMessageService = new Mock<IAppointmentMessageService>();
 
-        var sut = new SMSController(mockSmsNotification.Object, validator);
+        var sut = new SMSController(mockSmsNotification.Object, validator, mockMessageService.Object);
 
         var request = new SendMessageRequest()
         {
@@ -125,8 +142,9 @@ public class SMSControllerTests
         // Arrange
         var mockSmsNotification = new Mock<ISMSNotification>();
         var validator = new SendMessageRequestValidator();
+        var mockMessageService = new Mock<IAppointmentMessageService>();
 
-        var sut = new SMSController(mockSmsNotification.Object, validator);
+        var sut = new SMSController(mockSmsNotification.Object, validator, mockMessageService.Object);
 
         var request = new SendMessageRequest()
         {
@@ -156,8 +174,9 @@ public class SMSControllerTests
         // Arrange
         var mockSmsNotification = new Mock<ISMSNotification>();
         var validator = new SendMessageRequestValidator();
+        var mockMessageService = new Mock<IAppointmentMessageService>();
 
-        var sut = new SMSController(mockSmsNotification.Object, validator);
+        var sut = new SMSController(mockSmsNotification.Object, validator, mockMessageService.Object);
 
         var request = new SendMessageRequest()
         {
@@ -187,8 +206,9 @@ public class SMSControllerTests
         // Arrange
         var mockSmsNotification = new Mock<ISMSNotification>();
         var validator = new SendMessageRequestValidator();
+        var mockMessageService = new Mock<IAppointmentMessageService>();
 
-        var sut = new SMSController(mockSmsNotification.Object, validator);
+        var sut = new SMSController(mockSmsNotification.Object, validator, mockMessageService.Object);
 
         var request = new SendMessageRequest()
         {
@@ -215,11 +235,12 @@ public class SMSControllerTests
         // Arrange
         var mockSmsNotification = new Mock<ISMSNotification>();
         var validator = new SendMessageRequestValidator();
+        var mockMessageService = new Mock<IAppointmentMessageService>();
         mockSmsNotification
             .Setup(x => x.SendSMS(It.IsAny<string>(), It.IsAny<string>()))
             .ThrowsAsync(new Exception("Simulated failure"));
 
-        var sut = new SMSController(mockSmsNotification.Object, validator);
+        var sut = new SMSController(mockSmsNotification.Object, validator, mockMessageService.Object);
 
         var request = new SendMessageRequest()
         {
