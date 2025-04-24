@@ -18,7 +18,7 @@ public static class Program
         builder.Services.AddAuthorization();
 
         // Add the configuration for JWT from the appsettings.json
-        builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+        builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
 
         var app = builder.Build();
 

@@ -1,6 +1,9 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using NotificationWebApi.Business.SMSs;
+using NotificationWebApi.Business.WhatApps;
+using NotificationWebApi.Modules.Jwt;
 using NotificationWebApi.Modules.Services;
 using NotificationWebApi.Modules.Swagger;
 using NotificationWebApi.Requests.Validations;
@@ -29,7 +32,7 @@ public static class Program
             .AddJwtBearer(options =>
             {
                 // Get the configuration for JWT from the appsettings.json
-                var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+                var jwtSettings = builder.Configuration.GetSection(nameof(JwtSettings));
                 var secretKey = jwtSettings["SecretKey"];
                 var issuer = jwtSettings["Issuer"];
                 var audience = jwtSettings["Audience"];
@@ -47,8 +50,13 @@ public static class Program
             });
         builder.Services.AddAuthorization();
 
-        var app = builder.Build();
+        builder.Services.Configure<AzureSmsSettings>(
+            builder.Configuration.GetSection(nameof(AzureSmsSettings)));
 
+        builder.Services.Configure<UltramsgWhatAppSettings>(
+            builder.Configuration.GetSection(nameof(UltramsgWhatAppSettings)));
+
+        var app = builder.Build();
 
         app.UseSwagger();
         app.UseSwaggerUI();

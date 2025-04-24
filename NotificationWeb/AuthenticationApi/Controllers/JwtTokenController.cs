@@ -1,10 +1,10 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using AuthenticationApi.Modules.Jwt;
+﻿using AuthenticationApi.Modules.Jwt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace AuthenticationApi.Controllers;
 
@@ -14,9 +14,10 @@ public class JwtTokenController : ControllerBase
 {
     private readonly JwtSettings _jwtSettings;
 
-    public JwtTokenController(IOptions<JwtSettings> jwtSettings)
+    public JwtTokenController(IOptions<JwtSettings> jwtOptions)
     {
-        _jwtSettings = jwtSettings.Value;
+        _ = jwtOptions ?? throw new ArgumentNullException(nameof(jwtOptions));
+        _jwtSettings = jwtOptions.Value ?? throw new ArgumentNullException(nameof(jwtOptions.Value));
     }
 
     [HttpGet]
