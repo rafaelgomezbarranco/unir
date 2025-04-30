@@ -1,0 +1,117 @@
+{
+	"info": {
+		"_postman_id": "ab5463a2-ca44-4450-8c35-4e604cce3a80",
+		"name": "NotificationApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15561205",
+		"_collection_link": "https://blue-escape-540515.postman.co/workspace/Team-Workspace~033a7c85-e5f0-4de6-8e3e-437e7c2e2c28/collection/15561205-ab5463a2-ca44-4450-8c35-4e604cce3a80?action=share&source=collection_link&creator=15561205"
+	},
+	"item": [
+		{
+			"name": "Get token",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7219/api/JwtToken?user=admin",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7219",
+					"path": [
+						"api",
+						"JwtToken"
+					],
+					"query": [
+						{
+							"key": "user",
+							"value": "admin"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send SMS",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImp0aSI6IjkwYzg4OGFkLTliOTQtNDlkZC05NGRkLWIzMTY2MWVhZDI1MiIsImV4cCI6MTc0NjAzNjgwMSwiaXNzIjoicmdiLXVuaXItaXNzdWVyIiwiYXVkIjoicmdiLXVuaXItYXVkaWVuY2UifQ.XxmXVcvPY5zKZrLRtPJggo0DcxrBeLp2VM0zxqiGPEQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"patientName\": \"Maria\",\r\n  \"phoneNumber\": \"<<phone-number>>\",\r\n  \"languageCode\": \"es\",\r\n  \"dateTime\": \"2025-05-01T10:00:00.000Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:44316/api/SMS/send",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44316",
+					"path": [
+						"api",
+						"SMS",
+						"send"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send WhatApp",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImp0aSI6IjkwYzg4OGFkLTliOTQtNDlkZC05NGRkLWIzMTY2MWVhZDI1MiIsImV4cCI6MTc0NjAzNjgwMSwiaXNzIjoicmdiLXVuaXItaXNzdWVyIiwiYXVkIjoicmdiLXVuaXItYXVkaWVuY2UifQ.XxmXVcvPY5zKZrLRtPJggo0DcxrBeLp2VM0zxqiGPEQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"patientName\": \"Jesus\",\r\n  \"phoneNumber\": \"<<phone-number>>\",\r\n  \"languageCode\": \"es\",\r\n  \"dateTime\": \"2025-05-01T09:00:00.000Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:44316/api/WhatApp/send",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44316",
+					"path": [
+						"api",
+						"WhatApp",
+						"send"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
